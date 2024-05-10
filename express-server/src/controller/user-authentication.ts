@@ -1,6 +1,6 @@
 import express from 'express';
-import { getUserByEmail, createUser } from '../models/customers'; // Ensure the path is correct
-import { hashPassword, generateToken, comparePassword } from '../middleware'; // Middleware functions must be properly implemented
+import { getUserByEmail, createUser } from '../models/customers'; 
+import { hashPassword, generateToken, comparePassword } from '../middleware'; 
 
 interface UserData {
   username: string;
