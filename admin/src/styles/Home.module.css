@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    color: #fff;
+    text-align: center;
+  }
+  
+  .buttonContainer {
+    margin-top: 20px;
+  }
+  
+  .button {
+    background: linear-gradient(to right, #4B79A1, #283E51);
+    color: white;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  
+  .button:hover {
+    transform: scale(1.1);
+  }
+  

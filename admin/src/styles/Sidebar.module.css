@@ -1,0 +1,41 @@
+/* styles/Sidebar.module.css */
+.sidebar {
+  width: 250px; /* Adjust width as necessary */
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #eff0e3;
+  color: rgb(12, 12, 12);
+  padding: 20px; /* Add padding to ensure content is not too close to edges */
+  font-size: 16px; /* Adjust font size as needed */
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+}
+
+.sidebar ul {
+  list-style: none; /* Removes default list styling */
+  padding: 0;
+  margin: 0; /* Removes default margins */
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center; /* Vertically centers the items in the list */
+  margin-bottom: 10px; /* Adds some space between each item */
+}
+
+.sidebar li a {
+  color: inherit; /* Inherits the sidebar text color */
+  text-decoration: none; /* Removes underline from links */
+  display: flex;
+  align-items: center; /* Ensures text aligns with the icons */
+  gap: 10px; /* Adds space between the icon and text */
+  width: 100%; /* Ensures the link area spans the full width of the sidebar */
+}
+
+.sidebar li a:hover {
+  background-color: #f0f0f0; /* Adds a hover effect for better interactivity */
+  border-radius: 4px; /* Optional: adds rounded corners on hover */
+}

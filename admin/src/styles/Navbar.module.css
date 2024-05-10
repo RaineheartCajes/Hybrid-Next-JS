@@ -1,0 +1,12 @@
+.navbar {
+    background-color: #d9dcdf;
+    color: rgb(13, 11, 11);
+    padding: 10px 20px;
+    text-align: left;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 60px;
+  }
