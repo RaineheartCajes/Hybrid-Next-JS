@@ -1,0 +1,30 @@
+.nav {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px;
+  background-color: #333;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo a, .links a {
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.links a:hover, .links a:active {
+  color: #0070f3; /* Bright blue color when hovering or active */
+  text-decoration: underline; /* Optional: underline on hover */
+}
+
+.links {
+  display: flex;
+}
