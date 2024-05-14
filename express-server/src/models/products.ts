@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Schema} from "mongoose";
 
-interface Product {
+interface ProductModel{
     productName: string;
     description: string;
     media: string[];
@@ -8,22 +8,50 @@ interface Product {
     sizes: string[];
     colors: string[];
     price: number;
-    expense: number;
+    quantity: number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
-const ProductSchema = new mongoose.Schema({
-  productName: String,
-  description: String,
-  media: [String],
-  category: String,
-  sizes: [String],
-  colors: [String],
-  price: { type: mongoose.Schema.Types.Decimal128, get: (v: mongoose.Schema.Types.Decimal128) => { return parseFloat(v.toString()) }},
-  expense: { type: mongoose.Schema.Types.Decimal128, get: (v: mongoose.Schema.Types.Decimal128) => { return parseFloat(v.toString()) }},
+const ProductSchema = new Schema<ProductModel>({
+  productName: { type: String, required: true },
+  description: { type: String, required: true },
+  media: { type: [String]},
+  category: { type: String, required: true },
+  sizes: { type: [String], required: true },
+  colors: { type: [String], required: true },
+  quantity: { type: Number, required: true },
+  price: { 
+    type: Number, 
+    required: true, 
+    get: (v: number): number => parseFloat(v.toFixed(2))
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-}, { toJSON: { getters: true } });
+}, { toJSON: { getters: true, virtuals: true } });
 
-const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
+const Product = mongoose.model<ProductModel>("Product", ProductSchema);
+
+export const getAllProducts = async () => {
+    return await Product.find({});
+};
+
+export const getProductById = async (id: string) => {
+    return await Product.findById(id);
+};
+
+export const createProduct = async (data: ProductModel) => {
+    const product = new Product(data);
+    await product.save();
+    return product.toObject();
+};
+
+export const updateProduct = async (id: string, data: Partial<ProductModel>) => {
+    return await Product.findByIdAndUpdate(id, data, { new: true });
+};
+
+export const deleteProduct = async (id: string) => {
+    return await Product.findByIdAndDelete(id);
+};
 
 export default Product;

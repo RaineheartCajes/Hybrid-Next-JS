@@ -1,13 +1,15 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Layout from "../../layouts/layout";
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
-  Button, TablePagination 
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  Button, TablePagination, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem
 } from '@mui/material';
 
 interface InventoryItem {
+  _id: string;
   productName: string;
   category: string;
   quantity: number;
@@ -15,15 +17,90 @@ interface InventoryItem {
   color: string;
 }
 
-const inventoryData: InventoryItem[] = [
-  { productName: "Air Max", category: "Sneakers", quantity: 20, size: "S", color: "Black" },
-  { productName: "Yoga Mat", category: "Sports", quantity: 40, size: "L", color: "White" },
-  { productName: "T-shirt", category: "Fashion", quantity: 60, size: "M", color: "Red" },
-];
-
 const Inventory = () => {
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editOpen, setEditOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState<InventoryItem | null>(null);
+
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/table/getProducts');
+        const inventoryItems = response.data.map((item: any) => ({
+          _id: item._id,
+          productName: item.productName,
+          category: item.category,
+          quantity: item.quantity,
+          size: item.sizes.join(', '),
+          color: item.colors.join(', ')
+        }));
+        setInventory(inventoryItems);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      }
+    };
+
+    fetchInventory();
+  }, []);
+
+  const handleOpenEditModal = (item: InventoryItem) => {
+    setCurrentItem({ ...item, size: item.size.split(', ')[0], color: item.color.split(', ')[0] }); // Split and take the first if multiple
+    setEditOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditOpen(false);
+  };
+
+  const handleSaveChanges = async () => {
+    if (currentItem) {
+      try {
+        const response = await axios.put('http://localhost:2000/table/editInventory', {
+          productId: currentItem._id,
+          productName: currentItem.productName,
+          category: currentItem.category,
+          sizes: [currentItem.size], // Ensure sizes is an array
+          colors: [currentItem.color], // Ensure colors is an array
+          quantity: currentItem.quantity
+        });
+
+        const updatedItem = response.data;
+        const updatedInventory = inventory.map(item => item._id === updatedItem._id ? {
+          ...item,
+          productName: updatedItem.productName,
+          category: updatedItem.category,
+          size: updatedItem.sizes.join(', '),
+          color: updatedItem.colors.join(', '),
+          quantity: updatedItem.quantity
+        } : item);
+        setInventory(updatedInventory);
+        handleCloseEditModal();
+      } catch (error) {
+        console.error('Error updating product:', error);
+      }
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      await axios.delete(`http://localhost:2000/table/deleteProduct`, { data: { productId } });
+      const updatedInventory = inventory.filter(item => item._id !== productId);
+      setInventory(updatedInventory);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (currentItem) {
+      setCurrentItem({
+        ...currentItem,
+        [event.target.name]: event.target.value
+      });
+    }
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -50,7 +127,7 @@ const Inventory = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventoryData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+            {inventory.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.productName}</TableCell>
                 <TableCell>{item.category}</TableCell>
@@ -58,10 +135,10 @@ const Inventory = () => {
                 <TableCell>{item.color}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>
-                  <Button variant="contained" color="primary" style={{ marginRight: '10px' }}>
+                  <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(item)} style={{ marginRight: '10px' }}>
                     Edit
                   </Button>
-                  <Button variant="contained" color="secondary">
+                  <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(item._id)}>
                     Delete
                   </Button>
                 </TableCell>
@@ -72,13 +149,74 @@ const Inventory = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={inventoryData.length}
+          count={inventory.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      {/* Edit Inventory Item Modal */}
+      <Dialog open={editOpen} onClose={handleCloseEditModal}>
+        <DialogTitle>Edit Inventory Item</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Product Name"
+            name="productName"
+            value={currentItem?.productName || ''}
+            onChange={handleChange}
+            margin="dense"
+          />
+          <TextField
+            fullWidth
+            label="Category"
+            name="category"
+            value={currentItem?.category || ''}
+            onChange={handleChange}
+            margin="dense"
+          />
+          <TextField
+            select
+            fullWidth
+            label="Size"
+            name="size"
+            value={currentItem?.size || ''}
+            onChange={handleChange}
+            margin="dense"
+          >
+            {['S', 'M', 'L'].map(size => (
+              <MenuItem key={size} value={size}>{size}</MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            select
+            fullWidth
+            label="Color"
+            name="color"
+            value={currentItem?.color || ''}
+            onChange={handleChange}
+            margin="dense"
+          >
+            {['White', 'Red', 'Black'].map(color => (
+              <MenuItem key={color} value={color}>{color}</MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            fullWidth
+            label="Quantity"
+            name="quantity"
+            type="number"
+            value={currentItem?.quantity || 0}
+            onChange={handleChange}
+            margin="dense"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditModal}>Cancel</Button>
+          <Button onClick={handleSaveChanges}>Save</Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 };

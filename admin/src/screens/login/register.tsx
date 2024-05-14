@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'; // Corrected import
-import { Container, TextField, Button, Typography, Box, CssBaseline } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, CssBaseline, MenuItem } from '@mui/material';
 
 interface UserData {
   username: string;
@@ -11,6 +11,8 @@ interface UserData {
   email: string;
   password: string;
   confirmPassword: string;
+  mobileNumber: string;
+  role: string;  // Added role to the user data interface
 }
 
 const Register: React.FC = () => {
@@ -20,7 +22,9 @@ const Register: React.FC = () => {
     fullName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    mobileNumber: '',  // Initialize mobile number
+    role: ''           // Initialize role
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -34,9 +38,12 @@ const Register: React.FC = () => {
       alert('Passwords do not match!');
       return;
     }
+
+    // Create a new object for submission, excluding the confirmPassword
+    const { confirmPassword, ...submitData } = userData;
     try {
-      const response = await axios.post('http://localhost:2000/auth/register', userData);
-      router.push('/login'); // Adjust routing after successful registration
+      const response = await axios.post('http://localhost:2000/auth/register', submitData);
+      router.push('/login'); // Navigate to login page after successful registration
     } catch (error: any) {
       alert('Registration failed: ' + (error.response?.data?.message || 'An unexpected error occurred'));
     }
@@ -90,6 +97,31 @@ const Register: React.FC = () => {
             value={userData.email}
             onChange={handleChange}
           />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="mobileNumber"
+            label="Mobile Number"
+            name="mobileNumber"
+            autoComplete="tel"
+            value={userData.mobileNumber}
+            onChange={handleChange}
+          />
+          <TextField
+            select
+            label="Role"
+            value={userData.role}
+            onChange={handleChange}
+            name="role"
+            fullWidth
+            required
+            margin="normal"
+          >
+            <MenuItem value="User">User</MenuItem>
+            <MenuItem value="Admin">Admin</MenuItem>
+            {/* Add more roles as needed */}
+          </TextField>
           <TextField
             margin="normal"
             required

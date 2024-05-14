@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Layout from "../../layouts/layout";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
@@ -17,16 +18,23 @@ interface Customer {
   status: string;
 }
 
-const customerData: Customer[] = [
-  { email: "jane.doe@example.com", username: "Raineheart", fullName: "Jane Doe", role: "User", mobileNumber: "123-456-7890", status: "Active" },
-  { email: "john.doe@example.com", username: "Kurt", fullName: "John Doe", role: "Admin", mobileNumber: "098-765-4321", status: "Inactive" },
-  { email: "john.doe@example.com", username: "Diana", fullName: "John Doe", role: "Admin", mobileNumber: "098-765-4321", status: "Inactive" },
-  { email: "john.doe@example.com", username: "Hrishikesh", fullName: "John Doe", role: "Admin", mobileNumber: "098-765-4321", status: "Inactive" },
-];
-
 const Customers = () => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); 
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get<Customer[]>('http://localhost:2000/table/customer');
+        setCustomers(response.data);
+      } catch (error) {
+        console.error('Failed to fetch customers:', error);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -34,7 +42,7 @@ const Customers = () => {
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); 
+    setPage(0);
   };
 
   return (
@@ -54,7 +62,7 @@ const Customers = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customerData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((customer, index) => (
+            {customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((customer, index) => (
               <TableRow key={index}>
                 <TableCell component="th" scope="row">{customer.email}</TableCell>
                 <TableCell>{customer.username}</TableCell>
@@ -77,7 +85,7 @@ const Customers = () => {
         <TablePagination
           rowsPerPageOptions={[2, 5, 10]}
           component="div"
-          count={customerData.length}
+          count={customers.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

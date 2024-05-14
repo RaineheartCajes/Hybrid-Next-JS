@@ -1,46 +1,49 @@
 import express from 'express';
-import { getUserByEmail, createUser } from '../models/customers'; 
+import { getCustomerByEmail, createCustomer } from '../models/customers'; 
 import { hashPassword, generateToken, comparePassword } from '../middleware'; 
 
-interface UserData {
+
+interface CustomerData {
   username: string;
   email: string;
   password: string;
   fullName: string;
+  mobileNumber?: string; 
+  status?: string;       
+  role: string;
 }
 
-export const register = async (req: express.Request, res: express.Response): Promise<void> => {
-    try {
-        const { username, email, password, fullName } = req.body as UserData;
-    
-        if (!username || !email || !password || !fullName) {
-            res.status(400).send('Missing required fields');
-            return;
-        }
+export const register = async (req: express.Request, res: express.Response) => {
+    const { username, email, password, fullName, mobileNumber, status, role } = req.body as CustomerData;
 
-        const existingUser = await getUserByEmail(email);
-        if (existingUser) {
-            res.status(400).send('User already exists');
-            return;
-        }
-
-        const hashedPassword = await hashPassword(password);
-        const user = await createUser({
-            username,
-            email,
-            password: hashedPassword,
-            fullName
-        });
-
-        res.status(200).json({
-            token: generateToken(user._id.toString()),
-            username: user.username  
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+    if (!username || !email || !password || !fullName || !role) { // Checking for role as a required field
+        res.status(400).send('Missing required fields');
+        return;
     }
+
+    const existingUser = await getCustomerByEmail(email);
+    if (existingUser) {
+        res.status(400).send('Customer already exists');
+        return;
+    }
+
+    const hashedPassword = await hashPassword(password);
+    const newCustomer = await createCustomer({
+        username,
+        email,
+        password: hashedPassword,
+        fullName,
+        mobileNumber,
+        status,
+        role  // Storing role in the database
+    });
+
+    res.status(201).json({
+        id: newCustomer._id,
+        username: newCustomer.username,
+        email: newCustomer.email,
+        role: newCustomer.role  // Returning role in the response
+    });
 };
 
 
@@ -52,7 +55,7 @@ export const login = async (req: express.Request, res: express.Response) => {
             return res.status(400).json({ message: 'Email and password are required' });
         }
     
-        const user = await getUserByEmail(email);
+        const user = await getCustomerByEmail(email);
         if (!user) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -64,7 +67,13 @@ export const login = async (req: express.Request, res: express.Response) => {
     
         const token = generateToken(user._id.toString());
         
-        return res.status(200).json({ token, username: user.username });
+        return res.status(200).json({
+            token,
+            username: user.username,
+            email: user.email,
+            mobileNumber: user.mobileNumber, // Return only if exists
+            status: user.status             // Return only if exists
+        });
     
     } catch (error) {
         console.error(error);

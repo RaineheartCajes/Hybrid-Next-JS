@@ -23,8 +23,8 @@ const storage = multer.diskStorage({
 
 // Check File Type
 const checkFileType = (file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  // Allowed extensions
-  const filetypes = /pdf/;
+  // Allowed extensions for images
+  const filetypes = /jpeg|jpg|png|gif/;
   // Check extension
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check mime type
@@ -33,7 +33,7 @@ const checkFileType = (file: Express.Multer.File, cb: multer.FileFilterCallback)
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Error: PDFs Only!'));
+    cb(new Error('Error: Images Only! Allowed formats are JPEG, JPG, PNG, and GIF.'));
   }
 };
 
@@ -42,5 +42,6 @@ export const upload = multer({
   storage: storage,
   fileFilter: function(req, file, cb) {
     checkFileType(file, cb);
-  }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // Optional: File size limit (e.g., 5 MB)
 });

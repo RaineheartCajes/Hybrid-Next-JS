@@ -1,32 +1,45 @@
 import mongoose from 'mongoose';
 
-interface UserModel {
+interface CustomerModel {
     username: string;
     fullName: string;
     email: string;
     password: string;
-    orders: string[];
-    accountBalance: number;
+    mobileNumber: string;
+    status: string;
+    role: string;  // Added role as a required field
 }
 
-
-const UserSchema = new mongoose.Schema({
+const CustomerSchema = new mongoose.Schema<CustomerModel>({
     username: { type: String, required: true },
     fullName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    orders: {
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order"}]
-      },
-    accountBalance: { type: Number, default: 0 }
+    mobileNumber: { type: String, required: false }, // Made it explicitly optional here
+    status: { type: String, required: false },       // Made it explicitly optional here
+    role: { type: String, required: true }           // New required field
 });
 
-export const UserModel = mongoose.model('customers', UserSchema)
+const Customer = mongoose.model<CustomerModel>('Customer', CustomerSchema);
 
-export const getUsers = () => UserModel.find()
-export const getUserByEmail = (email: string) => UserModel.findOne({ email })
-export const getUserById = (id: string) => UserModel.findById(id)
-export const createUser = (values: Record<string, any>) => new UserModel(values).save().then((user) => user.toObject())
-export const deleteUserById = (id: string) => UserModel.findOneAndDelete({ _id: id })
-export const updateUserById = (id: string, values: Record<string, any>) => UserModel.findByIdAndUpdate(id, values)
+export const getAllCustomers = async () => {
+    return await Customer.find();
+};
 
+export const getCustomerByEmail = async (email: string) => {
+    return await Customer.findOne({ email });
+};
+
+export const createCustomer = async (data: CustomerModel) => {
+    const customer = new Customer(data);
+    await customer.save();
+    return customer.toObject();
+};
+
+export const updateCustomer = async (id: string, data: Partial<CustomerModel>) => {
+    return await Customer.findByIdAndUpdate(id, data, { new: true });
+};
+
+export const deleteCustomer = async (id: string) => {
+    return await Customer.findByIdAndDelete(id);
+};
