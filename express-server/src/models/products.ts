@@ -3,7 +3,7 @@ import mongoose, { Schema} from "mongoose";
 interface ProductModel{
     productName: string;
     description: string;
-    media: string[];
+    media: string;
     category: string;
     sizes: string[];
     colors: string[];
@@ -14,24 +14,23 @@ interface ProductModel{
 }
 
 const ProductSchema = new Schema<ProductModel>({
-  productName: { type: String, required: true },
-  description: { type: String, required: true },
-  media: { type: [String]},
-  category: { type: String, required: true },
-  sizes: { type: [String], required: true },
-  colors: { type: [String], required: true },
-  quantity: { type: Number, required: true },
-  price: { 
-    type: Number, 
-    required: true, 
-    get: (v: number): number => parseFloat(v.toFixed(2))
-  },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-}, { toJSON: { getters: true, virtuals: true } });
-
-const Product = mongoose.model<ProductModel>("Product", ProductSchema);
-
+    productName: { type: String, required: true },
+    description: { type: String, required: true },
+    media: { type: String}, // Changed from [String] to String
+    category: { type: String, required: true },
+    sizes: { type: [String], required: true },
+    colors: { type: [String], required: true },
+    quantity: { type: Number, required: true },
+    price: { 
+      type: Number, 
+      required: true, 
+      get: (v: number): number => parseFloat(v.toFixed(2))
+    },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+  }, { toJSON: { getters: true, virtuals: true } });
+  
+  const Product = mongoose.model<ProductModel>("Product", ProductSchema);
 export const getAllProducts = async () => {
     return await Product.find({});
 };

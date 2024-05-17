@@ -7,6 +7,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Button, TablePagination, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem
 } from '@mui/material';
+import Image from 'next/image';
 
 interface InventoryItem {
   _id: string;
@@ -15,6 +16,7 @@ interface InventoryItem {
   quantity: number;
   size: string;
   color: string;
+  media?: string; 
 }
 
 const Inventory = () => {
@@ -34,7 +36,8 @@ const Inventory = () => {
           category: item.category,
           quantity: item.quantity,
           size: item.sizes.join(', '),
-          color: item.colors.join(', ')
+          color: item.colors.join(', '),
+          media: item.media,
         }));
         setInventory(inventoryItems);
       } catch (error) {
@@ -119,6 +122,7 @@ const Inventory = () => {
           <TableHead style={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
               <TableCell>Product Name</TableCell>
+              <TableCell>Image</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Size</TableCell>
               <TableCell>Color</TableCell>
@@ -127,24 +131,36 @@ const Inventory = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventory.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.productName}</TableCell>
-                <TableCell>{item.category}</TableCell>
-                <TableCell>{item.size}</TableCell>
-                <TableCell>{item.color}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(item)} style={{ marginRight: '10px' }}>
-                    Edit
-                  </Button>
-                  <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(item._id)}>
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+  {inventory.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+    <TableRow key={index}>
+      <TableCell>{item.productName}</TableCell>
+      <TableCell>
+        {item.media && (
+          <div style={{ position: 'relative', width: 50, height: 50 }}>
+            <Image
+              src={`http://localhost:2000/${item.media}`}
+              alt={item.productName}
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+        )}
+      </TableCell>
+      <TableCell>{item.category}</TableCell>
+      <TableCell>{item.size}</TableCell>
+      <TableCell>{item.color}</TableCell>
+      <TableCell>{item.quantity}</TableCell>
+      <TableCell>
+        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(item)} style={{ marginRight: '10px' }}>
+          Edit
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(item._id)}>
+          Delete
+        </Button>
+      </TableCell>
+    </TableRow>
+  ))}
+</TableBody>
         </Table>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

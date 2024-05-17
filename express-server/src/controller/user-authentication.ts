@@ -4,17 +4,18 @@ import { hashPassword, generateToken, comparePassword } from '../middleware';
 
 
 interface CustomerData {
-  username: string;
-  email: string;
-  password: string;
-  fullName: string;
-  mobileNumber?: string; 
-  status?: string;       
-  role: string;
-}
+    username: string;
+    email: string;
+    password: string;
+    fullName: string;
+    mobileNumber?: string;  
+    status?: string;       
+    role: string;
+    shippingAddress?: string; // Added shippingAddress field
+  }
 
-export const register = async (req: express.Request, res: express.Response) => {
-    const { username, email, password, fullName, mobileNumber, status, role } = req.body as CustomerData;
+  export const register = async (req: express.Request, res: express.Response) => {
+    const { username, email, password, fullName, mobileNumber, status, role, shippingAddress } = req.body as CustomerData;
 
     if (!username || !email || !password || !fullName || !role) { // Checking for role as a required field
         res.status(400).send('Missing required fields');
@@ -35,14 +36,16 @@ export const register = async (req: express.Request, res: express.Response) => {
         fullName,
         mobileNumber,
         status,
-        role  // Storing role in the database
+        role,
+        shippingAddress // Include shippingAddress
     });
 
     res.status(201).json({
         id: newCustomer._id,
         username: newCustomer.username,
         email: newCustomer.email,
-        role: newCustomer.role  // Returning role in the response
+        role: newCustomer.role,  // Returning role in the response
+        shippingAddress: newCustomer.shippingAddress // Returning shippingAddress in the response
     });
 };
 
@@ -68,11 +71,13 @@ export const login = async (req: express.Request, res: express.Response) => {
         const token = generateToken(user._id.toString());
         
         return res.status(200).json({
+            id: user._id,
             token,
             username: user.username,
             email: user.email,
-            mobileNumber: user.mobileNumber, // Return only if exists
-            status: user.status             // Return only if exists
+            mobileNumber: user.mobileNumber,
+            status: user.status,
+            shippingAddress: user.shippingAddress // Include shipping address
         });
     
     } catch (error) {

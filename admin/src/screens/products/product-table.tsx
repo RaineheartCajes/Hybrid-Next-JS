@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from "../../layouts/layout";
+import Image from 'next/image';
+import { postProduct, fetchProducts } from '../../redux/slice/productReducer';
+import { RootState, AppDispatch } from '../../redux/store';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, IconButton, Button, Dialog, DialogActions, DialogContent,
+  Paper, Button, Dialog, DialogActions, DialogContent,
   DialogTitle, TextField, MenuItem, TablePagination
 } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
+import { Add as AddIcon } from '@mui/icons-material';
 
 interface Product {
   productName: string;
@@ -17,28 +20,28 @@ interface Product {
   colors: string[];
   price: number;
   description: string;
-  quantity: number; // New field for quantity
-  media?: string[];
+  quantity: number;
+  media?: string;  
 }
 
 interface ProductFormState extends Omit<Product, 'media'> {
   file?: File;
 }
 
-const Products = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const Products: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { products, loading, error } = useSelector((state: RootState) => state.products);
   const [open, setOpen] = useState(false);
   const [newProduct, setNewProduct] = useState<ProductFormState>({ productName: '', category: '', sizes: [], colors: [], price: 0, description: '', quantity: 0 });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await axios.get<Product[]>('http://localhost:2000/table/getProducts');
-      setProducts(response.data);
-    };
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+  }, [products]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -54,28 +57,19 @@ const Products = () => {
     formData.append('sizes', JSON.stringify(newProduct.sizes));
     formData.append('colors', JSON.stringify(newProduct.colors));
     formData.append('price', newProduct.price.toString());
-    formData.append('quantity', newProduct.quantity.toString()); // Adding quantity to FormData
+    formData.append('quantity', newProduct.quantity.toString());
     if (newProduct.file) {
       formData.append('media', newProduct.file);
     }
 
-    try {
-      await axios.post('http://localhost:2000/table/addProducts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setOpen(false);
-      setNewProduct({ productName: '', category: '', sizes: [], colors: [], price: 0, description: '', quantity: 0, file: undefined });
-      const response = await axios.get<Product[]>('http://localhost:2000/table/getProducts');
-      setProducts(response.data);
-    } catch (error) {
-      console.error('Error adding product:', error);
-    }
+    dispatch(postProduct(formData));
+    setOpen(false);
+    setNewProduct({ productName: '', category: '', sizes: [], colors: [], price: 0, description: '', quantity: 0, file: undefined });
   };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     if (name === 'sizes' || name === 'colors') {
@@ -84,9 +78,11 @@ const Products = () => {
       setNewProduct({ ...newProduct, [name]: value });
     }
   };
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
+
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -100,37 +96,41 @@ const Products = () => {
           Add Product
         </Button>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead style={{ backgroundColor: "#f5f5f5" }}>
-            <TableRow>
-              <TableCell>Product Name</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Size</TableCell>
-              <TableCell>Color</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Quantity</TableCell>
-              {/* <TableCell>Actions</TableCell> */}
+        <TableHead style={{ backgroundColor: "#f5f5f5" }}>
+          <TableRow>
+            <TableCell>Product Name</TableCell>
+            <TableCell>Image</TableCell> 
+            <TableCell>Category</TableCell>
+            <TableCell>Size</TableCell>
+            <TableCell>Color</TableCell>
+            <TableCell>Price</TableCell>
+            <TableCell>Quantity</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product, index) => (
+            <TableRow key={index}>
+              <TableCell>{product.productName}</TableCell>
+              <TableCell>
+                {product.media && (
+                  <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                    <Image
+                      src={`http://localhost:2000/uploads/${product.media.split('/').pop()}`} 
+                      alt="Product"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                )}
+              </TableCell>
+              <TableCell>{product.category}</TableCell>
+              <TableCell>{product.sizes.join(', ')}</TableCell>
+              <TableCell>{product.colors.join(', ')}</TableCell>
+              <TableCell>${product.price.toFixed(2)}</TableCell>
+              <TableCell>{product.quantity}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product, index) => (
-              <TableRow key={index}>
-                <TableCell>{product.productName}</TableCell>
-                <TableCell>{product.category}</TableCell>
-                <TableCell>{product.sizes.join(', ')}</TableCell>
-                <TableCell>{product.colors.join(', ')}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
-                <TableCell>{product.quantity}</TableCell>
-                {/* <TableCell>
-                  <IconButton aria-label="edit">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell> */}
-              </TableRow>
-            ))}
-          </TableBody>
+          ))}
+        </TableBody>
         </Table>
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}

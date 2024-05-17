@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import Footer from "../layouts/footer";
 
 const BackgroundImageBox = styled(Box)({
-  backgroundImage: 'url("https://source.unsplash.com/random/1024x768?shoes")',
+  backgroundImage: 'url("/home-bg2.jpg")',
   backgroundSize: "cover",
   backgroundPosition: "center",
   height: "100vh",
@@ -21,12 +21,12 @@ export default function Home() {
   return (
     <main>
       <BackgroundImageBox>
-        <Container maxWidth="sm" style={{ marginBottom: 100 }}>
+        <Container maxWidth="sm" >
           <Typography
             variant="h2"
             component="h1"
             gutterBottom
-            sx={{ textAlign: "center", marginBottom: 4 }}
+            sx={{ textAlign: "center", marginTop: 8 }}
           >
             Welcome to Admin Page
           </Typography>

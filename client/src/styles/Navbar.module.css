@@ -13,7 +13,37 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.logo a, .links a {
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.logo a:hover, .logo a:active {
+  color: #0070f3; /* Bright blue color when hovering or active */
+  text-decoration: underline; /* Optional: underline on hover */
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.links a {
   color: white;
   text-decoration: none;
   margin-right: 20px;
@@ -25,6 +55,19 @@
   text-decoration: underline; /* Optional: underline on hover */
 }
 
-.links {
+.cartIcon {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px; /* Ensures spacing on the left of the cart icon */
+}
+
+.cartIcon .MuiBadge-badge {
+  background-color: #0070f3; /* Custom color for the badge background */
+  color: white; /* Color of the text inside the badge */
+}
+
+/* Override MUI default colors */
+.cartIcon svg {
+  color: white; /* Ensures the cart icon is white to match other links */
 }

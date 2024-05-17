@@ -18,7 +18,7 @@ const Footer = () => {
             item
             xs={12}
             sm={4}
-            style={{ textAlign: "center", marginTop: 50 }}
+            style={{ textAlign: "center",  marginTop: 50 }}
           >
             <Typography variant="h6" component="div">
               Nova Techset Ltd.
@@ -68,7 +68,7 @@ const Footer = () => {
         <Typography
           variant="body2"
           sx={{ mt: 4 }}
-          style={{ textAlign: "center", marginTop: 50 }}
+          style={{ textAlign: "center" }}
         >
           © {new Date().getFullYear()} Nova Techset - All rights reserved.
         </Typography>

@@ -1,29 +1,43 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Layout from "../../layouts/layout";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, Select, MenuItem } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { fetchOrders, updateOrderStatus } from '../../redux/slice/orderReducer';
+import { RootState, useAppDispatch } from '../../redux/store';
+
+interface Product {
+  productName: string;
+}
 
 interface Order {
-  fullName: string;
-  productName: string;
+  _id: string;
+  customer: {
+    fullName: string;
+  };
+  products: {
+    product: Product;
+    color: string;
+    size: string;
+    quantity: number;
+  }[];
   shippingAddress: string;
-  amount: string;
+  totalAmount: number;
+  orderPlaced: boolean;
   status: string;
 }
 
-const ordersData: Order[] = [
-  { fullName: "Jane Doe", productName: "Air Max", shippingAddress: "123 Elm St, Anytown, AN", amount: "$199.99", status: "Shipped" },
-  { fullName: "John Smith", productName: "Jordan 1 Low", shippingAddress: "456 Oak St, Sometown, ST", amount: "$49.99", status: "Pending" },
-  { fullName: "Alice Johnson", productName: "Lebron 19", shippingAddress: "Dumaguete, Negros Oriental", amount: "$29.99", status: "Delivered" },
-  { fullName: "Jane Doe", productName: "Air Max", shippingAddress: "123 Elm St, Anytown, AN", amount: "$199.99", status: "Shipped" },
-  { fullName: "John Smith", productName: "Jordan 1 Low", shippingAddress: "456 Oak St, Sometown, ST", amount: "$49.99", status: "Pending" },
-];
-
 const Orders = () => {
+  const dispatch = useAppDispatch();
+  const { orders, loading, error } = useSelector((state: RootState) => state.orders);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(4);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -31,13 +45,17 @@ const Orders = () => {
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset page to zero when changing rows per page
+    setPage(0);
+  };
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    dispatch(updateOrderStatus({ id, status: newStatus }));
   };
 
   return (
     <Layout>
       <TableContainer component={Paper} style={{ marginTop: "80px" }}>
-        <h1 style={{ color: "black", fontSize: "30px", fontWeight: "bold"}}>Orders</h1>
+        <h1 style={{ color: "black", fontSize: "30px", fontWeight: "bold" }}>Orders</h1>
         <Table sx={{ minWidth: 650 }} aria-label="simple orders table">
           <TableHead style={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
@@ -50,13 +68,25 @@ const Orders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {ordersData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
+            {orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order, index) => (
               <TableRow key={index}>
-                <TableCell component="th" scope="row">{order.fullName}</TableCell>
-                <TableCell>{order.productName}</TableCell>
+                <TableCell component="th" scope="row">{order.customer.fullName}</TableCell>
+                <TableCell>
+                  {order.products.map((product, index) => (
+                    <div key={index}>{product.product.productName}</div>
+                  ))}
+                </TableCell>
                 <TableCell>{order.shippingAddress}</TableCell>
-                <TableCell>{order.amount}</TableCell>
-                <TableCell>{order.status}</TableCell>
+                <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
+                <TableCell>
+                  <Select
+                    value={order.status}
+                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                  >
+                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="Delivered">Delivered</MenuItem>
+                  </Select>
+                </TableCell>
                 <TableCell>
                   <IconButton aria-label="edit">
                     <EditIcon />
@@ -72,7 +102,7 @@ const Orders = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={ordersData.length}
+          count={orders.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
