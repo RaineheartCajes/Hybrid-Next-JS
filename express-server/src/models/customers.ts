@@ -1,5 +1,5 @@
 // src/models/Customer.ts
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, FilterQuery } from "mongoose";
 
 interface CustomerModel {
   username: string;
@@ -23,10 +23,14 @@ const CustomerSchema = new mongoose.Schema<CustomerModel>({
   shippingAddress: { type: String, required: false },
 });
 
-const Customer = mongoose.models.Customer || mongoose.model<CustomerModel>('Customer', CustomerSchema);
+const Customer =
+  mongoose.models.Customer ||
+  mongoose.model<CustomerModel>("Customer", CustomerSchema);
 
-export const getAllCustomers = async () => {
-  return await Customer.find();
+export const getAllCustomers = async (
+  filter: FilterQuery<CustomerModel> = {}
+) => {
+  return await Customer.find(filter);
 };
 
 export const getCustomerByEmail = async (email: string) => {
@@ -39,7 +43,10 @@ export const createCustomer = async (data: CustomerModel) => {
   return customer.toObject();
 };
 
-export const updateCustomer = async (id: string, data: Partial<CustomerModel>) => {
+export const updateCustomer = async (
+  id: string,
+  data: Partial<CustomerModel>
+) => {
   return await Customer.findByIdAndUpdate(id, data, { new: true });
 };
 

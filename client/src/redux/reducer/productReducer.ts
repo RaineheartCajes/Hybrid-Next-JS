@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 interface Product {
   _id: string;
@@ -25,10 +25,15 @@ const initialState: ProductsState = {
 };
 
 export const fetchProducts = createAsyncThunk(
-  'products/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  "products/fetchProducts",
+  async (searchTerm: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get<Product[]>('http://localhost:2000/table/getProducts');
+      const response = await axios.get<Product[]>(
+        `http://localhost:2000/table/getProducts`,
+        {
+          params: { search: searchTerm },
+        }
+      );
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || "Error fetching products");
@@ -37,7 +42,7 @@ export const fetchProducts = createAsyncThunk(
 );
 
 const productsSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -46,13 +51,16 @@ const productsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-        state.products = action.payload;
-        state.loading = false;
-      })
+      .addCase(
+        fetchProducts.fulfilled,
+        (state, action: PayloadAction<Product[]>) => {
+          state.products = action.payload;
+          state.loading = false;
+        }
+      )
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to load products";
+        state.error = (action.payload as string) || "Failed to load products";
       });
   },
 });

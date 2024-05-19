@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 interface Order {
   customer: mongoose.Schema.Types.ObjectId;
@@ -18,7 +18,7 @@ interface Order {
 const orderSchema = new mongoose.Schema<Order>({
   customer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
+    ref: "Customer",
     required: true,
   },
   orderPlaced: {
@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema<Order>({
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: "Product",
         required: true,
       },
       color: { type: String, required: true },
@@ -40,21 +40,24 @@ const orderSchema = new mongoose.Schema<Order>({
   ],
   shippingAddress: { type: String },
   totalAmount: { type: Number, required: true },
-  status: { type: String, required: true, default: 'Pending' },
+  status: { type: String, required: true, default: "Pending" },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-const Order = mongoose.models.Order || mongoose.model<Order>('Order', orderSchema);
+const Order =
+  mongoose.models.Order || mongoose.model<Order>("Order", orderSchema);
 
 export const getAllOrders = async () => {
-  return await Order.find().populate('customer').populate('products.product');
+  return await Order.find().populate("customer").populate("products.product");
 };
 
 export const getOrderById = async (id: string) => {
-  return await Order.findById(id).populate('customer').populate('products.product');
+  return await Order.findById(id)
+    .populate("customer")
+    .populate("products.product");
 };
 
 export const createOrder = async (data: Order) => {
@@ -64,7 +67,9 @@ export const createOrder = async (data: Order) => {
 };
 
 export const updateOrder = async (id: string, data: Partial<Order>) => {
-  return await Order.findByIdAndUpdate(id, data, { new: true }).populate('customer').populate('products.product');
+  return await Order.findByIdAndUpdate(id, data, { new: true })
+    .populate("customer")
+    .populate("products.product");
 };
 
 export const deleteOrder = async (id: string) => {
