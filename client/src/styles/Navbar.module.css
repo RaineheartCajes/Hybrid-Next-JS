@@ -68,6 +68,12 @@
 }
 
 /* Override MUI default colors */
-.cartIcon svg {
+.cartIcon svg { 
   color: white; /* Ensures the cart icon is white to match other links */
+}
+
+.welcomeMessage {
+  margin-left: 200px;
+  font-size: 20px;
+  color: white; /* Optional: Change the color to match your design */
 }

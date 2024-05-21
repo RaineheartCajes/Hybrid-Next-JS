@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useDebounce } from "use-debounce";
 import Layout from "../../layouts/layout";
 import {
   Table,
@@ -38,11 +39,13 @@ const Inventory = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [editOpen, setEditOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState<InventoryItem | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
 
-  const fetchInventory = async () => {
+  const fetchInventory = async (searchTerm = "") => {
     try {
       const response = await axios.get(
-        "http://localhost:2000/table/getProducts"
+        `http://localhost:2000/table/getProducts?search=${searchTerm}`
       );
       const inventoryItems = response.data.map((item: any) => ({
         _id: item._id,
@@ -60,8 +63,8 @@ const Inventory = () => {
   };
 
   useEffect(() => {
-    fetchInventory();
-  }, []);
+    fetchInventory(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   const handleOpenEditModal = (item: InventoryItem) => {
     setCurrentItem({
@@ -152,6 +155,14 @@ const Inventory = () => {
         <h1 style={{ color: "black", fontSize: "30px", fontWeight: "bold" }}>
           Inventory
         </h1>
+        <TextField
+          fullWidth
+          label="Search Products"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ marginBottom: "20px" }}
+        />
         <Table sx={{ minWidth: 650 }} aria-label="simple inventory table">
           <TableHead style={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
