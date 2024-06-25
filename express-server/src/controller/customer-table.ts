@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllCustomers } from "../models/customers"; // Adjust the import path according to your project structure
+import { getAllCustomers } from "../models/customers";  
 
 export const getCustomerList = async (
   req: express.Request,
@@ -8,10 +8,10 @@ export const getCustomerList = async (
   try {
     const searchTerm = req.query.search as string;
     const query = searchTerm
-      ? { fullName: { $regex: searchTerm, $options: "i" } } // Search by fullName
+      ? { fullName: { $regex: searchTerm, $options: "i" } } 
       : {};
     const customers = await getAllCustomers(query);
-    // Assuming you want to modify or hide the password and maybe other sensitive fields before sending
+    
     const sanitizedCustomers = customers.map((customer) => {
       const { password, ...customerWithoutPassword } = customer.toObject();
       return customerWithoutPassword;

@@ -76,7 +76,7 @@ const productsSlice = createSlice({
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
-        state.error = null; // Reset error on new fetch attempt
+        state.error = null; 
       })
       .addCase(
         fetchProducts.fulfilled,
@@ -91,12 +91,12 @@ const productsSlice = createSlice({
       })
       .addCase(postProduct.pending, (state) => {
         state.loading = true;
-        state.error = null; // Reset error on new post attempt
+        state.error = null; 
       })
       .addCase(
         postProduct.fulfilled,
         (state, action: PayloadAction<Product>) => {
-          state.products.push(action.payload); // Assuming the backend returns the newly added product
+          state.products.push(action.payload); 
           state.loading = false;
         }
       )

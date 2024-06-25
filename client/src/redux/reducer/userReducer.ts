@@ -22,13 +22,13 @@ const userSlice = createSlice({
       state.id = action.payload.id;
       state.username = action.payload.username;
       state.email = action.payload.email;
-      state.shippingAddress = action.payload.shippingAddress; // Add shipping address
+      state.shippingAddress = action.payload.shippingAddress;
     },
     clearUser: (state) => {
       state.id = '';
       state.username = '';
       state.email = '';
-      state.shippingAddress = ''; // Clear shipping address
+      state.shippingAddress = ''; 
     },
   },
 });

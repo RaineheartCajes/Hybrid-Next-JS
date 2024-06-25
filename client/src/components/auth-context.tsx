@@ -10,7 +10,7 @@ interface User {
   id: string;
   username: string;
   email: string;
-  shippingAddress: string; // Add shipping address
+  shippingAddress: string; 
 }
 
 interface AuthContextType {
@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         id: userData.id,
         username: userData.username,
         email: userData.email,
-        shippingAddress: userData.shippingAddress, // Include shipping address
+        shippingAddress: userData.shippingAddress,
       }));
       setIsAuthenticated(true);
       setUserState(userData);

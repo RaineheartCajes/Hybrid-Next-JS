@@ -27,13 +27,13 @@ export const addProduct = async (
       price,
       quantity,
     } = req.body;
-    // Store only the filename in the database
-    const media = req.file ? req.file.filename : ""; // Using only filename
+   
+    const media = req.file ? req.file.filename : ""; 
 
     const productData = {
       productName,
       description,
-      media: `uploads/${media}`, // Storing relative path
+      media: `uploads/${media}`,
       category,
       sizes: JSON.parse(sizes),
       colors: JSON.parse(colors),

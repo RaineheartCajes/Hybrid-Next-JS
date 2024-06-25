@@ -2,11 +2,10 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
-// import dotenv from 'dotenv';
 import router from "./routes";
 import path from "path";
 
-// dotenv.config();
+
 
 const app = express();
 
@@ -15,8 +14,6 @@ const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin
-      // (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         var msg =

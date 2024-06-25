@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import NavBar from '../components/navbar';
-import styles from '../styles/Home.module.css';  // Assuming you have Home.module.css for styles
+import styles from '../styles/Home.module.css';  
 
 const Home: NextPage = () => {
   return (

@@ -37,7 +37,7 @@ const ProductPage: React.FC = () => {
   );
   const user = useSelector((state: RootState) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500); // 500ms debounce
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500); 
   const [color, setColor] = useState<{ [key: string]: string }>({});
   const [size, setSize] = useState<{ [key: string]: string }>({});
 
@@ -64,7 +64,7 @@ const ProductPage: React.FC = () => {
       })
     );
 
-    // Clear fields after adding to cart
+   
     setColor((prev) => ({ ...prev, [product._id]: "" }));
     setSize((prev) => ({ ...prev, [product._id]: "" }));
   };

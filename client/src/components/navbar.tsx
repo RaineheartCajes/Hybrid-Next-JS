@@ -7,7 +7,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Badge, Modal, Box, Button } from '@mui/material';
 import CartModal from '../screens/nav/cart';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/index'; // Import RootState from store
+import { RootState } from '../redux/index'; 
 import { useAuth } from '../components/auth-context';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +16,7 @@ const NavBar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const cartCount = useSelector((state: RootState) => state.cart.totalQuantity);
   const { isAuthenticated, logout } = useAuth();
-  const username = useSelector((state: RootState) => state.user.username); // Get username from state
+  const username = useSelector((state: RootState) => state.user.username); 
 
   const handleCartClick = (event: React.MouseEvent) => {
     event.preventDefault();

@@ -50,7 +50,7 @@ const SigninPage: React.FC = () => {
             borderRadius: 2,
             boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
             backgroundColor: 'white',
-            width: '100%', // Use full width of the container
+            width: '100%',
           }}
         >
           <Typography component="h1" variant="h5">

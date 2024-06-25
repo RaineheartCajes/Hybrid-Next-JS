@@ -1,4 +1,3 @@
-// src/screens/nav/cart.tsx
 import React from 'react';
 import { Typography, Box, Button } from '@mui/material';
 import Image from 'next/image';
@@ -35,7 +34,7 @@ const CartModal: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items) as CartItem[];
   const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
   const { isAuthenticated, user } = useAuth();
-  const shippingAddress = useSelector((state: RootState) => state.user.shippingAddress); // Get shipping address from Redux
+  const shippingAddress = useSelector((state: RootState) => state.user.shippingAddress);  
 
   const handleRemoveFromCart = (id: string) => {
     dispatch(removeFromCart(id));
@@ -62,15 +61,15 @@ const CartModal: React.FC = () => {
           size: item.size,
           quantity: item.quantity,
         })),
-        shippingAddress, // Use the user's shipping address
+        shippingAddress, 
         totalAmount,
       };
 
       const response = await axios.post('http://localhost:2000/table/newOrder', orderData);
       console.log('Order placed successfully:', response.data);
 
-      // Optionally, you might want to clear the cart after placing the order
-      dispatch(clearCart()); // Add this action to your cart reducer if needed
+      
+      dispatch(clearCart()); 
     } catch (error) {
       console.error('Error placing order:', error);
     }

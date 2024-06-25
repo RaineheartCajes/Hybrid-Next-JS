@@ -27,7 +27,7 @@ export const createNewOrder = async (
       return res.status(400).send("Products are required");
     }
 
-    // Validate and update product quantities
+   
     for (const product of products) {
       if (!product.color || !product.size || !product.quantity) {
         return res

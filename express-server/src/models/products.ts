@@ -17,7 +17,7 @@ const ProductSchema = new Schema<ProductModel>(
   {
     productName: { type: String, required: true },
     description: { type: String, required: true },
-    media: { type: String }, // Changed from [String] to String
+    media: { type: String }, 
     category: { type: String, required: true },
     sizes: { type: [String], required: true },
     colors: { type: [String], required: true },

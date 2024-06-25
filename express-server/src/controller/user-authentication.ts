@@ -11,13 +11,13 @@ interface CustomerData {
     mobileNumber?: string;  
     status?: string;       
     role: string;
-    shippingAddress?: string; // Added shippingAddress field
+    shippingAddress?: string;
   }
 
   export const register = async (req: express.Request, res: express.Response) => {
     const { username, email, password, fullName, mobileNumber, status, role, shippingAddress } = req.body as CustomerData;
 
-    if (!username || !email || !password || !fullName || !role) { // Checking for role as a required field
+    if (!username || !email || !password || !fullName || !role) { 
         res.status(400).send('Missing required fields');
         return;
     }
@@ -37,15 +37,15 @@ interface CustomerData {
         mobileNumber,
         status,
         role,
-        shippingAddress // Include shippingAddress
+        shippingAddress 
     });
 
     res.status(201).json({
         id: newCustomer._id,
         username: newCustomer.username,
         email: newCustomer.email,
-        role: newCustomer.role,  // Returning role in the response
-        shippingAddress: newCustomer.shippingAddress // Returning shippingAddress in the response
+        role: newCustomer.role,  
+        shippingAddress: newCustomer.shippingAddress 
     });
 };
 
@@ -77,7 +77,7 @@ export const login = async (req: express.Request, res: express.Response) => {
             email: user.email,
             mobileNumber: user.mobileNumber,
             status: user.status,
-            shippingAddress: user.shippingAddress // Include shipping address
+            shippingAddress: user.shippingAddress 
         });
     
     } catch (error) {

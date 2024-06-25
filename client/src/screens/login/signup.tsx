@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Button, Container, TextField, Typography, MenuItem, CssBaseline, Alert } from '@mui/material';
-import Layout from '@/layouts/layout'; // Ensure this is the correct path to your layout component
+import Layout from '@/layouts/layout'; 
 
 interface SignupFormData {
   username: string;
@@ -14,7 +14,7 @@ interface SignupFormData {
   repeatPassword: string;
   mobileNumber: string;
   role: 'admin' | 'user';
-  shippingAddress: string; // Added shippingAddress field
+  shippingAddress: string; 
 }
 
 const SignupPage: React.FC = () => {
@@ -27,7 +27,7 @@ const SignupPage: React.FC = () => {
     repeatPassword: '',
     mobileNumber: '',
     role: 'user',
-    shippingAddress: '' // Initialize shippingAddress
+    shippingAddress: '' 
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ const SignupPage: React.FC = () => {
         fullName: formData.fullname,
         mobileNumber: formData.mobileNumber,
         role: formData.role,
-        shippingAddress: formData.shippingAddress // Include shippingAddress
+        shippingAddress: formData.shippingAddress 
       });
       setError(null);
       router.push('/signin');
@@ -76,7 +76,7 @@ const SignupPage: React.FC = () => {
             borderRadius: 2,
             boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
             backgroundColor: 'white',
-            width: '100%', // Use full width of the container
+            width: '100%', 
           }}
         >
           <Typography component="h1" variant="h5">
@@ -84,7 +84,7 @@ const SignupPage: React.FC = () => {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
             <TextField
-              margin="dense" // smaller margin
+              margin="dense" 
               required
               fullWidth
               id="username"
@@ -94,7 +94,7 @@ const SignupPage: React.FC = () => {
               autoFocus
               value={formData.username}
               onChange={handleChange}
-              size="small" // smaller field size
+              size="small" 
             />
             <TextField
               margin="dense"

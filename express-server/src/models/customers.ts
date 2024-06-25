@@ -1,4 +1,3 @@
-// src/models/Customer.ts
 import mongoose, { Schema, Document, FilterQuery } from "mongoose";
 
 interface CustomerModel {

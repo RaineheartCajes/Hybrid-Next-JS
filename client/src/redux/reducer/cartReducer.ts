@@ -1,4 +1,4 @@
-// src/redux/reducer/cartReducer.ts
+
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CartItem {
@@ -7,9 +7,9 @@ interface CartItem {
   price: number;
   quantity: number;
   media: string;
-  color: string;          // Add this line
-  size: string;           // Add this line
-  shippingAddress: string; // Add this line
+  color: string;         
+  size: string;           
+  shippingAddress: string; 
 }
 
 interface CartState {
