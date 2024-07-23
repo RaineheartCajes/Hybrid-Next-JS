@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 
 
 const ReduxProvider = dynamic(
-  () => import('@/redux/redux-provider'), 
+  () => import('@/services/redux-provider'), 
   { ssr: false } 
 );
 

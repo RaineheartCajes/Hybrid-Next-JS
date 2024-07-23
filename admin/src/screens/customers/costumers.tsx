@@ -85,7 +85,6 @@ const Customers = () => {
               <TableCell>Fullname</TableCell>
               <TableCell>Role</TableCell>
               <TableCell>Mobile Number</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -101,7 +100,6 @@ const Customers = () => {
                   <TableCell>{customer.fullName}</TableCell>
                   <TableCell>{customer.role}</TableCell>
                   <TableCell>{customer.mobileNumber}</TableCell>
-                  <TableCell>{customer.status}</TableCell>
                   <TableCell>
                     <IconButton aria-label="edit">
                       <EditIcon />

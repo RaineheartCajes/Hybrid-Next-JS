@@ -20,8 +20,8 @@ import {
   TextField,
 } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { fetchOrders, updateOrderStatus } from "../../redux/slice/orderReducer";
-import { RootState, useAppDispatch } from "../../redux/store";
+import { fetchOrders, updateOrderStatus } from "../../services/slice/orderReducer";
+import { RootState, useAppDispatch } from "../../services/store";
 import { useDebounce } from "use-debounce";
 
 interface Product {

@@ -1,12 +1,12 @@
-import React from 'react'
-import ProductPage from '../../../screens/nav/products'
+import React from 'react';
+import ProductPage from '../../../screens/nav/products';
 
 const Products: React.FC = () => {
   return (
     <div>
-      <ProductPage/>
+      <ProductPage />
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

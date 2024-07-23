@@ -1,10 +1,11 @@
 "use client"
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { setUser, clearUser } from '../redux/reducer/userReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, clearUser } from '../services/reducer/userReducer';
+import { RootState } from '../services/index';
 
 interface User {
   id: string;
@@ -27,6 +28,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUserState] = useState<User | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
+  const userFromStore = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (userFromStore.id) {
+      setIsAuthenticated(true);
+      setUserState(userFromStore);
+    } else {
+      setIsAuthenticated(false);
+      setUserState(null);
+    }
+  }, [userFromStore]);
 
   const login = async (email: string, password: string) => {
     try {

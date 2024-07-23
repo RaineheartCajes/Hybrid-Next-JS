@@ -1,8 +1,8 @@
 // store.ts
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import ordersReducer from '../redux/slice/orderReducer';
-import productsReducer from '../redux/slice/productReducer';
+import ordersReducer from '../services/slice/orderReducer';
+import productsReducer from '../services/slice/productReducer';
 
 export const store = configureStore({
   reducer: {

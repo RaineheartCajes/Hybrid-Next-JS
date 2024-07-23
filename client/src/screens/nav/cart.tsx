@@ -3,9 +3,9 @@ import { Typography, Box, Button } from '@mui/material';
 import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { RootState, AppDispatch } from '../../redux/index';
-import { removeFromCart, clearCart } from '../../redux/reducer/cartReducer';
-import { useAuth } from '../../components/auth-context';
+import { RootState, AppDispatch } from '../../services/index';
+import { removeFromCart, clearCart } from '../../services/reducer/cartReducer';
+import { useAuth } from '../../auth/auth-context';
 
 interface CartItem {
   _id: string;

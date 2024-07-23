@@ -15,9 +15,10 @@ import {
   TextField,
 } from "@mui/material";
 import { useDebounce } from "use-debounce";
-import { RootState, AppDispatch } from "../../redux/index";
-import { fetchProducts } from "../../redux/reducer/productReducer";
-import { addToCart } from "../../redux/reducer/cartReducer";
+import { RootState, AppDispatch } from "../../services/index";
+import { fetchProducts } from "../../services/reducer/productReducer";
+import { addToCart } from "../../services/reducer/cartReducer";
+import withAuth from "@/auth/withAuth";
 
 interface Product {
   _id: string;
@@ -180,4 +181,4 @@ const ProductPage: React.FC = () => {
   );
 };
 
-export default ProductPage;
+export default withAuth(ProductPage);

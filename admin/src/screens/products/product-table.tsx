@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../layouts/layout";
 import Image from "next/image";
-import { postProduct, fetchProducts } from "../../redux/slice/productReducer";
-import { RootState, AppDispatch } from "../../redux/store";
+import { postProduct, fetchProducts } from "../../services/slice/productReducer";
+import { RootState, AppDispatch } from "../../services/store";
 import { useDebounce } from "use-debounce";
 import {
   Table,

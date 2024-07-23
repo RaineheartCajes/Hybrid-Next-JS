@@ -7,8 +7,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Badge, Modal, Box, Button } from '@mui/material';
 import CartModal from '../screens/nav/cart';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/index'; 
-import { useAuth } from '../components/auth-context';
+import { RootState } from '../services/index'; 
+import { useAuth } from '../auth/auth-context';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

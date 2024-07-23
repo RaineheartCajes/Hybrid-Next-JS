@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Button, Container, TextField, Typography, CssBaseline } from '@mui/material';
 import Layout from '@/layouts/layout'; 
-import { useAuth } from '../../components/auth-context';
+import { useAuth } from '../../auth/auth-context';
 
 interface LoginForm {
   email: string;

@@ -1,5 +1,5 @@
-import ReduxProvider from "../redux/ReduxProvider";
-import {AuthProvider} from "../components/auth-context";
+import ReduxProvider from "../services/ReduxProvider";
+import {AuthProvider} from "../auth/auth-context";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -15,10 +15,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const response = await fetch("https://dummyjson.com/users");
-  // const result = await response.json();
-
-  // const user = result.users[0] as User;
 
   return (
     <html lang="en">
